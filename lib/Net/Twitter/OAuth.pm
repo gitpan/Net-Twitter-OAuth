@@ -2,7 +2,7 @@ package Net::Twitter::OAuth;
 
 use strict;
 use 5.008_001;
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base qw( Net::Twitter );
 
@@ -143,11 +143,11 @@ secret to upgrade the request token to access token.
   sub twitter_auth_callback : Local {
       my($self, $c) = @_;
 
-      my $cookie = $c->response->cookies->{oauth}->value;
+      my %cookie = $c->request->cookies->{oauth}->value;
 
       my $client = Net::Twitter::OAuth->new(%param);
-      $client->oauth->request_token($client->{token});
-      $client->oauth->request_token_secret($client->{token_secret});
+      $client->oauth->request_token($cookie{token});
+      $client->oauth->request_token_secret($cookie{token_secret});
 
       my($access_token, $access_token_secret)
           = $client->oauth->request_access_token;
